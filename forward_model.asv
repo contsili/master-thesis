@@ -1,0 +1,41 @@
+%% first add Fieltrip to your path
+
+headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1); % headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3) doesn't work since 'cocentric spheres' is not supported as a head model.
+sensors = ni2_sensors('type', 'opm_tangential_radial');
+
+%% 
+% These can be visualized using a few functions from the FieldTrip-toolbox:
+
+figure; hold on;
+ft_plot_headmodel(headmodel, 'edgecolor', 'none', 'facecolor', 'skin'); alpha 0.5 
+ft_plot_sens(sensors, 'elecshape', 'disc', 'elecsize', 1, 'label', 'off');
+view([1 1 1])
+axis on; grid on
+xlabel('x'); ylabel('y'); zlabel('z'); 
+
+%% 
+% Now that we have a sensor array and a volume conductor model of the head, 
+% we can build a model for any source specified within the volume conductor. 
+% For example:
+
+dippar1 = [0 0 6 1 0 0];
+leadfield1 = ni2_leadfield(sensors, headmodel, dippar1);
+ni2_topoplot(sensors, leadfield1); colorbar % a reason why the topoplot is not good for opm_tangential_radial is because I have 2 signals from 1 location. But the lf thinks these are two different locations, so in some close locations the signals add up and some others they subtract leading to this highly variable topography. The solution would be to add up the signals that are picked up by the sensors in the same location: leadfield= leadfield2 + leadfield1 and then plot 261 locations, not 522. I do that in the next lines
+
+% try to add the leadfields of meg and opm_tangential separately
+sensors1 = ni2_sensors('type', 'opm_tangential');
+sensors2 = ni2_sensors('type', 'meg');
+
+leadfield1 = ni2_leadfield(sensors1, headmodel, dippar1);
+leadfield2 = ni2_leadfield(sensors2, headmodel, dippar1);
+
+leadfield= leadfield2 + leadfield1;
+ni2_topoplot(sensors1, leadfield1); colorbar
+ni2_topoplot(sensors2, leadfield2); colorbar
+ni2_topoplot(sensors1, leadfield); colorbar
+
+
+% Also I can add them up vectorially since the sensors have 90 deg angle
+% difference:
+leadfield= sqrt(leadfield2.^2 + leadfield1.^2);
+ni2_topoplot(sensors1, leadfield); colorbar

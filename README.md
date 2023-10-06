@@ -1,4 +1,4 @@
-# Comparisons between SQUID- and OPM-based MEG systems.
+# Comparisons between SQUID- and OPM-based MEG systems
 Research question: Would OPM-MEG systems in the long run be able to replace SQUID/Cryogenic/conventional MEG systems? If yes, how many OPM-MEG sensors do we need to outperform the existing 275-channel SQUID-MEG system from CTF?
 
 My master thesis project is split in 3 parts: 1. simulations 2. phantom measurements 3. measuremts in human subjects

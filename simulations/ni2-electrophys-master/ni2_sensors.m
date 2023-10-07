@@ -11,7 +11,8 @@ function sens = ni2_sensors(varargin)
 %  'meg' generates a 301-channel meg magnetometer sensor array
 % 
 %  'opm_radial' generates a 301-channel opm-meg magnetometer sensor array with
-%  one radial channel for each sensor
+%  one radial channel for each sensor (the difference from 'meg' is that
+%  'opm_radial' are closer to the scalp)
 % 
 %  'opm_tangential' generates a 301-channel opm-meg magnetometer sensor array with
 %  one tangential channel for each sensor

@@ -190,7 +190,24 @@ ni2_topoplot(sensors, leadfield1); colorbar % a reason why the topoplot is not g
 
 
 
-%% TODO: Select different channels with cfg.channel, also find the typical sensor noise, also add correlatted noise (maybe this is added by adding dipoles inside the head (background brain activity) and outside the head (correlated noise from environmental sources like a car or elevator*))
+%% TODO: 
+% 1. 100 times loop around different nr of channels with Monte Carlo simulations (randomly take out a
+% channel IN EVERY ONE of the 20 dipole fits) or mesh_sphere. 
+% 2. 100 times loop around different sensor noise
+% 3. use qsubselfun
+% 4a. For opm do many dipole fits, find σ_opm 
+% 4b. For ctf do 1 dipole fit (what sensor noise shall I use?)
+% 5. Make the plot that Robert asked (sensors noise - sensors number plot
+% and color code with σ_opm/σ_ctf>1 => blue etc...). Note a t-test would
+% compare each of the 100*100 σ_opm vs 1 σ_ctf separately and it will give ONLY 1 RESULT (which is if there is
+% significant difference or not). We dont want only 1 result!! 
+
+% Maybe I can use Github projects for that.
+
+
+% Stretch goals: 
+% 1. find the typical sensor noise in CTF, 
+% 2. add correlatted noise (maybe this is added by adding dipoles inside the head (background brain activity) and outside the head (correlated noise from environmental sources like a car or elevator*))
 % * a car or elevator moves regarding the MEG, so it is a moving source (we will model this later)
 
 

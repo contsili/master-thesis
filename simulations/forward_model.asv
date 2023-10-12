@@ -25,7 +25,7 @@ leadfield1 = ni2_leadfield(sensors, headmodel, dippar1, 0.1 * 10^-10);
 ni2_topoplot(sensors, leadfield1); colorbar 
 
 
-%% 2. check separately opm_tangential and opm_radial
+%% 2. add linearly opm_tangential and opm_radial
 
 headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1); 
 sensors1 = ni2_sensors('type', 'opm_tangential');
@@ -34,8 +34,8 @@ sensors2 = ni2_sensors('type', 'opm_radial');
 dippar1 = [0 0 6 1 0 0];
 
 % With random sensor noise
-leadfield1 = ni2_leadfield(sensors1, headmodel, dippar1, 0.1 * 10^-10));
-leadfield2 = ni2_leadfield(sensors2, headmodel, dippar1, 0.1 * 10^-10));
+leadfield1 = ni2_leadfield(sensors1, headmodel, dippar1);
+leadfield2 = ni2_leadfield(sensors2, headmodel, dippar1);
 % leadfield= leadfield2 + leadfield1;
 
 ni2_topoplot(sensors1, leadfield1); colorbar % opm_tangential
@@ -47,40 +47,6 @@ ni2_topoplot(sensors2, leadfield2); colorbar % opm_radial
 % % difference:
 % leadfield= sqrt(leadfield2.^2 + leadfield1.^2);
 % ni2_topoplot(sensors1, leadfield); colorbar
-
-
-
-%%%%%%%%%%% Dipole fitting %%%%%%%%%%%%%
-% [data1,time]=ni2_activation
-
-data = [];
-data.time=linspace(0.01,1,100);
-data.avg = repmat(leadfield2,1,100);
-data.label = sensors.label;
-data.elec = sensors;
-data.dimord = 'chan_time';
-
-
-cfg = [];
-cfg.gridsearch = 'yes';
-% cfg.model = 'regional'
-cfg.latency = 0.50;
-cfg.headmodel = headmodel;
-cfg.nonlinear = 'yes';
-cfg.numdipoles = 1;
-
-dip = ft_dipolefitting(cfg, data); %this does all the work
-
-ni2_topoplot(sensors,dip.Vdata(:,1)); title('Data');
-ni2_topoplot(sensors,dip.Vmodel(:,1)); title('Model')
-
-figure; hold on;
-ft_plot_headmodel(headmodel, 'edgecolor', 'none', 'facecolor', 'skin'); alpha 0.5 
-ft_plot_sens(sensors, 'elecshape', 'disc', 'elecsize', 1, 'label', 'off');
-view([1 1 1])
-axis on; grid on
-xlabel('x'); ylabel('y'); zlabel('z'); 
-ft_plot_dipole(dip.dip.pos(1,:), mean(dip.dip.mom(1:3,:),2), 'color', 'r')
 
 %% 3. ctf275
 

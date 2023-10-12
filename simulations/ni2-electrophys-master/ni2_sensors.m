@@ -100,8 +100,7 @@ switch type
     end
     
     % rotated_points now contains the rotated points
-    chanpos        = chanpos*10; % I choose *10 as in the eeg, because opm are close to the head
-    chanpos(:,3)   = chanpos(:,3) - 1.5;
+    chanpos        = chanpos*10.5; % I choose *10 as in the eeg, because opm are close to the head
 
     chanpos=[chanpos;chanpos];
 
@@ -142,8 +141,7 @@ switch type
     end
     
     % rotated_points now contains the rotated points
-    chanpos        = chanpos*10; % I choose *10 as in the eeg, because opm are close to the head
-    chanpos(:,3)   = chanpos(:,3) - 1.5;
+    chanpos        = chanpos*10.5; % I choose *10 as in the eeg, because opm are close to the head
 
     z = chanpos(:,3);
     coilori        = coilori(z>0,:);
@@ -171,7 +169,6 @@ switch type
     
     % rotated_points now contains the rotated points
     chanpos        = chanpos*10;
-    chanpos(:,3)   = chanpos(:,3) - 1.5;
 
     z = chanpos(:,3);
     coilori        = coilori(z>0,:);

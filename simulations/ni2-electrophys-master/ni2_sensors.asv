@@ -7,13 +7,19 @@ function sens = ni2_sensors(varargin)
 %
 % Where senstype can be any of the following:
 %  'eeg' generates a 91-channel eeg sensor array
+% 
 %  'meg' generates a 301-channel meg magnetometer sensor array
+% 
 %  'opm_radial' generates a 301-channel opm-meg magnetometer sensor array with
-%  one radial channel for each sensor
+%  one radial channel for each sensor (the difference from 'meg' is that
+%  'opm_radial' are closer to the scalp)
+% 
 %  'opm_tangential' generates a 301-channel opm-meg magnetometer sensor array with
 %  one tangential channel for each sensor
+% 
 % 'opm_tangential_radial' generates a 301-channel opm-meg magnetometer sensor array with
-%  one tangential channel for each sensor
+%  two channels for each sensor, one tangential and one radial (like the
+%  FieldLine system we bought in DCCN)
 
 
 type   = ft_getopt(varargin, 'type', 'eeg');
@@ -43,6 +49,7 @@ switch type
       sens.chantype{k,1} = 'eeg';
     end
     sens = ft_datatype_sens(sens);
+    
 
     case {'meg'}
     % create a magnetometer array
@@ -50,8 +57,7 @@ switch type
      coilori        = chanpos;
     
     % rotated_points now contains the rotated points
-%     chanpos        = chanpos*12.5; % why *12.5? Is there a mathematical formula for that?
-    chanpos        = chanpos*10;
+    chanpos        = chanpos*12.5; % why *12.5? Is there a mathematical formula for that?
     chanpos(:,3)   = chanpos(:,3) - 1.5;
 
     z = chanpos(:,3);
@@ -71,6 +77,7 @@ switch type
       sens.chantype{k,1} = 'megmag';
     end
     sens = ft_datatype_sens(sens);
+
 
     case {'opm_tangential_radial'}
     % create a magnetometer array
@@ -93,8 +100,7 @@ switch type
     end
     
     % rotated_points now contains the rotated points
-    chanpos        = chanpos*10; % I choose *10 as in the eeg, because opm are close to the head
-    chanpos(:,3)   = chanpos(:,3) - 1.5;
+    chanpos        = chanpos*10.5; % I choose *10 as in the eeg, because opm are close to the head
 
     chanpos=[chanpos;chanpos];
 
@@ -116,6 +122,7 @@ switch type
     end
     sens = ft_datatype_sens(sens);
 
+
     case {'opm_tangential'}
     % create a magnetometer array
     [chanpos, tri] = icosahedron642;
@@ -134,7 +141,34 @@ switch type
     end
     
     % rotated_points now contains the rotated points
-    chanpos        = chanpos*10; % I choose *10 as in the eeg, because opm are close to the head
+    chanpos        = chanpos*10.5; % I choose *10 as in the eeg, because opm are close to the head
+
+    z = chanpos(:,3);
+    coilori        = coilori(z>0,:);
+    chanpos        = chanpos(z>0,:);
+    nchan          = size(chanpos,1);
+
+    sens.unit    = 'cm';
+    sens.coordsys = 'neuromag';
+    sens.chanpos = chanpos;
+    sens.chanori = coilori;
+    sens.coilpos = chanpos;
+    sens.coilori = coilori;
+    sens.tra     = eye(nchan);
+    for k = 1:nchan
+      sens.label{k,1}    = sprintf('meg% 03d', k);
+      sens.chantype{k,1} = 'megmag';
+    end
+    sens = ft_datatype_sens(sens);
+
+
+     case {'opm_radial'}
+    % create a magnetometer array
+    [chanpos, tri] = icosahedron642;
+     coilori        = chanpos;
+    
+    % rotated_points now contains the rotated points
+    chanpos        = chanpos*10;
     chanpos(:,3)   = chanpos(:,3) - 1.5;
 
     z = chanpos(:,3);
@@ -155,6 +189,7 @@ switch type
     end
     sens = ft_datatype_sens(sens);
 
+
   case 'ctf151'
     load('ctf151');
     % only keep the normal channels
@@ -167,6 +202,7 @@ switch type
     sens.chanpos  = sens.chanpos(sel,:);
     sens.chanori  = sens.chanori(sel,:);
 
+
   case 'ctf275'
     load('ctf275');
 
@@ -178,6 +214,8 @@ switch type
     sens.tra      = sens.tra(sel,:);
     sens.chanpos  = sens.chanpos(sel,:);
     sens.chanori  = sens.chanori(sel,:);
+
+
 
   case 'bti248'
     load('bti248');
@@ -204,7 +242,8 @@ switch type
     error('unsupported type % s', type);
 end
 
-function C = cross_matrix(v)
+
+    function C = cross_matrix(v) % used in the Rodrigues formula
     % This function returns the cross product matrix of a vector v
     C = [0 -v(3) v(2); v(3) 0 -v(1); -v(2) v(1) 0];
 end

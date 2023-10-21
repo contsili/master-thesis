@@ -25,6 +25,7 @@ function sens = ni2_sensors(varargin)
 type   = ft_getopt(varargin, 'type', 'eeg');
 jitter = ft_getopt(varargin, 'jitter', 0);
 n      = ft_getopt(varargin, 'n', 162); % number of vertices for the sphere, determines the number of electrodes, this is the old default
+NumberOfSensors = ft_getopt(varargin, 'sensor_number', 0);
 
 switch type
   case 'eeg'
@@ -83,6 +84,18 @@ switch type
     % create a magnetometer array
     [chanpos, tri] = icosahedron642;
     
+    % Keep only the upper semi-sphere
+    z = chanpos(:,3);
+    chanpos       = chanpos(z>0,:);
+    
+    % Manually determine the number of sensors (if NumberOfSensors = 32
+    % then number of channels will be 64, which means chanpos: 64 x 3, and not 32 x 3)
+    if NumberOfSensors
+        % Randomly take out a sensors (Monte-Carlo simulation)
+        randomIndices = randperm(size(chanpos, 1), NumberOfSensors);
+        chanpos       = chanpos(randomIndices,:);
+    end
+    
     coilori = zeros(2*size(chanpos,1),3);
     coilori(1:size(chanpos,1),:)        = chanpos;
     angle =pi/2;
@@ -102,12 +115,8 @@ switch type
     % rotated_points now contains the rotated points
     chanpos        = chanpos*10.5; % I choose *10 as in the eeg, because opm are close to the head
 
-    chanpos=[chanpos;chanpos];
-
-    z = chanpos(:,3);
-    coilori        = coilori(z>0,:);
-    chanpos       = chanpos(z>0,:);
-    nchan          = size(chanpos,1);
+    chanpos=[chanpos;chanpos];    
+    nchan          = size(chanpos,1);    
 
     sens.unit    = 'cm';
     sens.coordsys = 'neuromag';

@@ -211,3 +211,78 @@ ni2_topoplot(sensors, leadfield1); colorbar % a reason why the topoplot is not g
 % * a car or elevator moves regarding the MEG, so it is a moving source (we will model this later)
 
 
+%% sensors noise - sensors number plot
+
+% 1 dipole fit for SQUID
+sensors_noise_SQUID = 1 * 10^-10 % I picked it randomly
+for k= 1:20            
+            headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1); 
+            sensors = ni2_sensors('type', 'ctf275');  
+
+            dippar1 = [0 0 6 1 0 0];
+            
+            leadfield1 = ni2_leadfield(sensors, headmodel, dippar1, sensor_noise_SQUID);
+
+            %%%%%%%%%%% Dipole fitting %%%%%%%%%%%%%
+            data = [];
+            data.time=linspace(0.01,1,100);
+            data.avg = repmat(leadfield1,1,100); % keep the same leadfield in 100 time points so I can add a fake time dimension (later I care only about 1 time dimension: cfg.latency = 0.50;). Otherwise I could use ni2_activation. If I do not do that I get the ERROR that the data doesnt represent real "timelock" activity.  
+            data.label = sensors.label;
+            data.grad = sensors; % Note: use data.elec for eeg and data.grad for meg
+            data.dimord = 'chan_time';
+            
+            cfg = [];
+            cfg.gridsearch = 'yes';
+            % cfg.model = 'regional'
+            cfg.latency = 0.50;
+            cfg.headmodel = headmodel;
+            cfg.nonlinear = 'yes';
+            cfg.numdipoles = 1;
+            
+            dip = ft_dipolefitting(cfg, data); %this does all the work
+            
+            dip_location_SQUID(k,:) = dip.dip.pos;
+end 
+
+sigma_location_OPM(i,j) = std    
+
+
+% Many dipole fits for OPM
+sensors_noise_OPM = linspace(0.1 * 10^-10, 100 * 10^-10, 2);
+
+for i = 1:length(sensors_noise_OPM)
+    for j = 301:-1:299
+        for k= 1:20            
+            headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1); 
+            sensors = ni2_sensors('type', 'opm_tangential_radial', 'sensor_number', j);
+             
+            dippar1 = [0 0 6 1 0 0];
+            
+            leadfield1 = ni2_leadfield(sensors, headmodel, dippar1, sensor_noise_OPM(i));
+
+            %%%%%%%%%%% Dipole fitting %%%%%%%%%%%%%
+            data = [];
+            data.time=linspace(0.01,1,100);
+            data.avg = repmat(leadfield1,1,100); % keep the same leadfield in 100 time points so I can add a fake time dimension (later I care only about 1 time dimension: cfg.latency = 0.50;). Otherwise I could use ni2_activation. If I do not do that I get the ERROR that the data doesnt represent real "timelock" activity.  
+            data.label = sensors.label;
+            data.grad = sensors; % Note: use data.elec for eeg and data.grad for meg
+            data.dimord = 'chan_time';
+            
+            cfg = [];
+            cfg.gridsearch = 'yes';
+            % cfg.model = 'regional'
+            cfg.latency = 0.50;
+            cfg.headmodel = headmodel;
+            cfg.nonlinear = 'yes';
+            cfg.numdipoles = 1;
+            
+            dip = ft_dipolefitting(cfg, data); %this does all the work
+            
+            dip_location_OPM(k,:) = dip.dip.pos;
+        end 
+
+        sigma_location_OPM(i,j) = std    
+    end
+end
+
+sigma_location_relative = sigma_location_OPM / sigma_location_SQUID;

@@ -254,11 +254,9 @@ sensor_number_OPM = 201:20:301;
 sigma_location_OPM = zeros(length(sensor_noise_OPM), length(sensor_number_OPM)); % initialise vector
 
 for i = 1:length(sensor_noise_OPM)
-    for j = 1:length(sensor_number_OPM)        
-        for k = 1:12 % 20 * 3 sensor_number * 2 sensor_noise = 120 dipole fits/simulations
+    for j = 1:length(sensor_number_OPM)      
             fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%')
             fprintf('\n\n')
-            fprintf('%dth dipole fit for:\n', k);
             fprintf('Sensor Number (OPM): %d\n', sensor_number_OPM(j));
             fprintf('Sensor Noise (OPM): %d\n', i);
             fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%')
@@ -269,58 +267,54 @@ for i = 1:length(sensor_noise_OPM)
              
             dippar1 = [0 0 6 1 0 0];
             
-            leadfield1 = ni2_leadfield(sensors, headmodel, dippar1, sensor_noise_OPM(i));
+            leadfield1 = ni2_leadfield(sensors, headmodel, dippar1);
 
             %%%%%%%%%%% Dipole fitting %%%%%%%%%%%%%
             data = [];
-            data.time=linspace(0.01,1,100);
-            data.avg = repmat(leadfield1,1,100); % keep the same leadfield in 100 time points so I can add a fake time dimension (later I care only about 1 time dimension: cfg.latency = 0.50;). Otherwise I could use ni2_activation. If I do not do that I get the ERROR that the data doesnt represent real "timelock" activity.  
+            data.time=linspace(0.01,1,100); % 100 dipole fit iterations
+            data.avg = repmat(leadfield1,1,100)+ sensor_noise_OPM(i) * randn(1, 100); % keep the same leadfield in 100 time points so I can add a fake time dimension (later I care only about 1 time dimension: cfg.latency = 0.50;). Otherwise I could use ni2_activation. If I do not do that I get the ERROR that the data doesnt represent real "timelock" activity.  
             data.label = sensors.label;
             data.grad = sensors; % Note: use data.elec for eeg and data.grad for meg
             data.dimord = 'chan_time';
             
             cfg = [];
-            cfg.gridsearch = 'yes';
-            % cfg.model = 'regional'
-            cfg.latency = 0.50;
+            cfg.gridsearch = 'no';
+            cfg.dip.pos = dippar1(1:3);
+            cfg.model = 'moving';
+            cfg.latency = 'all';
             cfg.headmodel = headmodel;
             cfg.nonlinear = 'yes';
             cfg.numdipoles = 1;
+%             cfg.feedback = 'no'; % Purpose: do not print the results of
+%             ft_dipolefitting in the command window. Result: It does not
+%             work
+            cfg.showcallinfo = 'no'; % the time and memory is not printed
             
             dip = ft_dipolefitting(cfg, data); 
 
-            dip_location_OPM = zeros(20,3);% initialise vector
-            dip_location_OPM(k,:) = dip.dip.pos;
-        end 
+            dip_location_OPM = zeros(length(data.time),3); % initialise vector
+            from_structure_to_vector = extractfield(dip.dip, 'pos');
+            dip_location_OPM = reshape(from_structure_to_vector, [3,100])';
+         
         
         sigma_location_OPM(i,j) = sqrt((std(dip_location_OPM(:,1))^2 + std(dip_location_OPM(:,2))^2 + std(dip_location_OPM(:,3))^2)  / 3 ); % this formula is taken from Vrba (2000). "Multichannel SQUID biomagnetic systems"
     end
 end
 
 sigma_location_relative = sigma_location_OPM / sigma_location_SQUID;
-
+% sigma_location_log = log(sigma_location_OPM / sigma_location_SQUID);
 
 %% plot 
 
-% Preprocess the matrix to assign colors based on conditions
-redIndices = sigma_location_relative < 1; % OPM wins
-blueIndices = sigma_location_relative > 1; % SQUID wins
-greenIndices = sigma_location_relative == 1; % no winner
-
-% Create a new matrix for colors
-colorMatrix = zeros(size(sigma_location_relative, 1), size(sigma_location_relative, 2), 3); 
-colorMatrix(:, :, 1) = redIndices; % Set red
-colorMatrix(:, :, 3) = blueIndices; % Set blue
-colorMatrix(:, :, 2) = greenIndices; % Set green
-
-
 % Display the color matrix
-imagesc(sensor_number_OPM, sensor_noise_OPM, colorMatrix);
+imagesc(sensor_number_OPM, sensor_noise_OPM, sigma_location_relative)
+colormap('jet'); 
 set(gca,'YDir','normal') % flip the y-axis to be in ascending order
 
 % Set the axis labels
 xlabel('sensor number OPM');
 ylabel('sensor noise OPM');
+title('Dipole fit uncertainty for OPM vs SQUID')
 
 % Add a colorbar with the label "sigma_OPM/sigma_SQUID"
 c = colorbar;
@@ -328,6 +322,6 @@ c.Label.Interpreter = 'tex';
 c.Label.String = '\sigma_{OPM}/\sigma_{SQUID}';
 
 % Modify the colorbar to show "SQUID wins" when the color is blue and "OPM wins" when the color is red
-colormap(c, [1 0 0; 0 0 1]);
-c.Ticks = [0.25, 0.75];
+colormap(c, 'jet');
+c.Ticks = [0.6, 1.75];
 c.TickLabels = {'OPM wins', 'SQUID wins'};

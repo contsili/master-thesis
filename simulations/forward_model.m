@@ -249,9 +249,10 @@ sigma_location_SQUID = sqrt((std(dip_location_SQUID(:,1))^2 + std(dip_location_S
     
 
 %% Many dipole fits for OPM
-sensor_noise_OPM = [0.1 * 10^-10, 1 * 10^-10, 10 * 10^-10, 100 * 10^-10];
-sensor_number_OPM = 201:20:301;
+sensor_noise_OPM = [5 * 10^-10, 7 * 10^-10, 9 * 10^-10, 10 * 10^-10, 11 * 10^-10, 13 * 10^-10, 16 * 10^-10,  20 * 10^-10, 25 * 10^-10];
+sensor_number_OPM = 21:15:201;
 sigma_location_OPM = zeros(length(sensor_noise_OPM), length(sensor_number_OPM)); % initialise vector
+sigma_location_relative = zeros(length(sensor_noise_OPM), length(sensor_number_OPM)); % initialise vector
 
 for i = 1:length(sensor_noise_OPM)
     for j = 1:length(sensor_number_OPM)      
@@ -272,7 +273,7 @@ for i = 1:length(sensor_noise_OPM)
             %%%%%%%%%%% Dipole fitting %%%%%%%%%%%%%
             data = [];
             data.time=linspace(0.01,1,100); % 100 dipole fit iterations
-            data.avg = repmat(leadfield1,1,100)+ sensor_noise_OPM(i) * randn(1, 100); % keep the same leadfield in 100 time points so I can add a fake time dimension (later I care only about 1 time dimension: cfg.latency = 0.50;). Otherwise I could use ni2_activation. If I do not do that I get the ERROR that the data doesnt represent real "timelock" activity.  
+            data.avg = repmat(leadfield1,1,length(data.time))+ sensor_noise_OPM(i) * randn(1, length(data.time)); % keep the same leadfield in 100 time points so I can add a fake time dimension (later I care only about 1 time dimension: cfg.latency = 0.50;). Otherwise I could use ni2_activation. If I do not do that I get the ERROR that the data doesnt represent real "timelock" activity.  
             data.label = sensors.label;
             data.grad = sensors; % Note: use data.elec for eeg and data.grad for meg
             data.dimord = 'chan_time';
@@ -294,20 +295,27 @@ for i = 1:length(sensor_noise_OPM)
 
             dip_location_OPM = zeros(length(data.time),3); % initialise vector
             from_structure_to_vector = extractfield(dip.dip, 'pos');
-            dip_location_OPM = reshape(from_structure_to_vector, [3,100])';
+            dip_location_OPM = reshape(from_structure_to_vector, [3,length(data.time)])';
          
         
-        sigma_location_OPM(i,j) = sqrt((std(dip_location_OPM(:,1))^2 + std(dip_location_OPM(:,2))^2 + std(dip_location_OPM(:,3))^2)  / 3 ); % this formula is taken from Vrba (2000). "Multichannel SQUID biomagnetic systems"
-    end
+            sigma_location_OPM(i,j) = sqrt((std(dip_location_OPM(:,1))^2 + std(dip_location_OPM(:,2))^2 + std(dip_location_OPM(:,3))^2)  / 3 ); % this formula is taken from Vrba (2000). "Multichannel SQUID biomagnetic systems"
+            sigma_location_relative(i,j) = sigma_location_OPM(i,j) / sigma_location_SQUID;
+            % sigma_location_log = log(sigma_location_OPM / sigma_location_SQUID);
+    
+            if sigma_location_relative(i,j) > 2 % we care about the "green" line, so when sigma_location_relative(i,j) = 1, we do not care about too high values. I chose sigma_location_relative(i,j) > 2 to get an equidistant range around 1 (from 0 to 1 OPM wins, from 1 to 2 SQUID wins)
+                sigma_location_relative(i,j) = nan;
+            end
+
+    end 
 end
 
-sigma_location_relative = sigma_location_OPM / sigma_location_SQUID;
-% sigma_location_log = log(sigma_location_OPM / sigma_location_SQUID);
+
 
 %% plot 
 
-% Display the color matrix
-imagesc(sensor_number_OPM, sensor_noise_OPM, sigma_location_relative)
+% Plot1: sensor noise OPM - sensor number OPM - sigma
+subplot(2,length(sensor_noise_OPM),1:length(sensor_noise_OPM))
+h = imagesc(sensor_number_OPM, sensor_noise_OPM, sigma_location_relative);
 colormap('jet'); 
 set(gca,'YDir','normal') % flip the y-axis to be in ascending order
 
@@ -325,3 +333,44 @@ c.Label.String = '\sigma_{OPM}/\sigma_{SQUID}';
 colormap(c, 'jet');
 c.Ticks = [0.6, 1.75];
 c.TickLabels = {'OPM wins', 'SQUID wins'};
+
+% make NaNs totally transparent (i.e., make them white)
+set(h, 'AlphaData', ~isnan(sigma_location_relative));
+
+
+
+% Plot2: sigma - sensor number OPM
+for i=1:length(sensor_noise_OPM)
+    subplot(2,length(sensor_noise_OPM),length(sensor_noise_OPM)+i)
+    plot(sensor_number_OPM, sigma_location_relative(i,:),'b*')
+    ylabel('\sigma_{OPM}/\sigma_{SQUID}')
+    xlabel('sensor number OPM')
+
+    h = sprintf('Sensor noise: %g', sensor_noise_OPM(i)); % note that fprintf() does not work.
+    title(h);
+
+    % Fit a linear model
+    y = sigma_location_relative(i, :);
+    x = sensor_number_OPM;
+    
+    % Fit a linear model (y = mx + b)
+    p = polyfit(x(~isnan(y)), y(~isnan(y)), 4);
+    
+    % Calculate the fitted values
+    fittedValues = polyval(p, x);
+    
+    % Plot the fitted line
+    hold on;
+    plot(x, fittedValues, 'r', 'LineWidth', 2);
+    
+
+%     % Add the fitted equation as text below the plot
+%     fittedEquation = sprintf('y = %.4fx + %.4f', p(1), p(2));
+% 
+%     % Get current axes
+%     ax = gca; 
+%     
+%     % Add text on the right upper corner of each subplot
+%     text(ax.XLim(2), ax.YLim(2), fittedEquation, 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top');
+end
+

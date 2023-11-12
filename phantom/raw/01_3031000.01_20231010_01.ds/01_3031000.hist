@@ -1,0 +1,35 @@
+************************************************************
+DATE:
+10-Oct-2023 15:34
+
+OPERATOR:
+meg
+
+APP:
+Acq 6.1.14-beta-el6_8.x86_64-20180116-3847
+
+Dataset name 01_3031000.01_20231010_01
+Operator: Konstantinos Tsilimparis
+Title: noise
+Procedure  step description: 
+Keywords: 
+Sample rate: 600
+Trial duration: 1
+Pre-trigger interval: 0
+Low pass filter: frequency  = 40, order = 4
+Notch filter: frequency  = 50, width = 5
+Notch filter: frequency  = 50, width = 5
+Notch filter: frequency  = 100, width = 5
+
+Collection stopped: 10-Oct-2023 15:35
+
+Collection stopped: 10-Oct-2023 15:38
+
+Collection started: 10-Oct-2023 15:38
+
+Collection stopped: 10-Oct-2023 15:38
+
+
+SUMMARY:
+Maximum head motion is unknown
+Maximum head motion is unknown

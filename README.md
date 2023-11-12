@@ -5,9 +5,9 @@ My master thesis project is split in 3 parts: 1. simulations 2. phantom measurem
 
 # Simulations
 
-The code is based on the code provided by Robert Oostenveld in the course Neuroimaging II - Electrophysiological Methods and it is part of Konstantinos Tsilimparis' internship project.
+The code is based on the code provided by Robert Oostenveld in the course Neuroimaging II - Electrophysiological Methods (see: ni2-electrophys-master folder) and it is part of Konstantinos Tsilimparis' internship project.
 
-The opm-meg system we try to simulate is the one ordered in the DCCN from FieldLine Inc. It has 32 sensors, 2 channels each (one radial, one tangential)
+The OPM-MEG system we try to simulate is the one ordered in the DCCN from FieldLine Inc. It has 32 sensors, 2 channels each (one radial, one tangential).
 
 *forward_model.m*:
 
@@ -26,9 +26,17 @@ Metrics I want to use to quantify my comparsion:
 maximum field detected
 
 2. Source-level:
-a. dipole location error,
+a. dipole fit uncertainty,
 b. compare Vdata (ideal topography detected following dipole location) that can be explained by the Vmodel (measured topography following dipole location). For this, I can use
 
-R-squared (coefficient of determination) - How good is the fit (measures the proportion of the variance in the Vdata that can be explained by the Vmodel.): R_squared = 1 - sum((Vdata_N20 - Vmodel_N20).^2) / sum((Vdata_N20 - mean(Vdata_N20)).^2)
+R-squared (coefficient of determination) - How good is the fit (measures the proportion of the variance in the Vdata that can be explained by the Vmodel.): 
+R_squared = 1 - sum((Vdata_N20 - Vmodel_N20).^2) / sum((Vdata_N20 - mean(Vdata_N20)).^2)
 
-Root Mean Square Error (RMSE): rmse = sqrt(mean((data - model).^2));
+```latex
+R^2 = 1 - \frac{\sum (V_{\text{data\_N20}} - V_{\text{model\_N20}})^2}{\sum (V_{\text{data\_N20}} - \text{mean}(V_{\text{data\_N20}}))^2}
+```
+
+
+
+Root Mean Square Error (RMSE): 
+rmse = sqrt(mean((data - model).^2));

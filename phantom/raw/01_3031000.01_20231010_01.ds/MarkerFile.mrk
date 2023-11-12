@@ -1,0 +1,141 @@
+PATH OF DATASET:
+/ctfmeg/ACQ_Data/20231010/01_3031000.01_20231010_01.ds
+
+
+NUMBER OF MARKERS:
+7
+
+
+CLASSGROUPID:
+3
+NAME:
+HDAC004
+COMMENT:
+Trigger Marker corresponding to HDAC004 (CondBitPattern=0x40, CondBitMask=0x40, Flag0to1Only=1,MinStableLength=0,TransientSearchMask=0x0)
+COLOR:
+red
+EDITABLE:
+No
+CLASSID:
+1
+NUMBER OF SAMPLES:
+0
+LIST OF SAMPLES:
+TRIAL NUMBER		TIME FROM SYNC POINT (in seconds)
+
+
+CLASSGROUPID:
+3
+NAME:
+HDAC005
+COMMENT:
+Trigger Marker corresponding to HDAC005 (CondBitPattern=0x1, CondBitMask=0x1, Flag0to1Only=1,MinStableLength=0,TransientSearchMask=0x0)
+COLOR:
+red
+EDITABLE:
+No
+CLASSID:
+2
+NUMBER OF SAMPLES:
+0
+LIST OF SAMPLES:
+TRIAL NUMBER		TIME FROM SYNC POINT (in seconds)
+
+
+CLASSGROUPID:
+3
+NAME:
+HDAC006
+COMMENT:
+Trigger Marker corresponding to HDAC006 (CondBitPattern=0x4, CondBitMask=0x4, Flag0to1Only=1,MinStableLength=0,TransientSearchMask=0x0)
+COLOR:
+red
+EDITABLE:
+No
+CLASSID:
+3
+NUMBER OF SAMPLES:
+7
+LIST OF SAMPLES:
+TRIAL NUMBER		TIME FROM SYNC POINT (in seconds)
+                   0				                  +0
+                   0				     +0.141666666667
+                   0				              +0.285
+                   0				     +0.428333333333
+                   0				     +0.571666666667
+                   0				     +0.713333333333
+                   0				     +0.856666666667
+
+
+CLASSGROUPID:
++3
+NAME:
+HDAC007
+COMMENT:
+Trigger Marker corresponding to HDAC007 (CondBitPattern=0x10, CondBitMask=0x10, Flag0to1Only=1,MinStableLength=0,TransientSearchMask=0x0)
+COLOR:
+red
+EDITABLE:
+No
+CLASSID:
++4
+NUMBER OF SAMPLES:
+0
+LIST OF SAMPLES:
+TRIAL NUMBER		TIME FROM SYNC POINT (in seconds)
+
+
+CLASSGROUPID:
++3
+NAME:
+HDAC008
+COMMENT:
+Trigger Marker corresponding to HDAC008 (CondBitPattern=0x40, CondBitMask=0x40, Flag0to1Only=1,MinStableLength=0,TransientSearchMask=0x0)
+COLOR:
+red
+EDITABLE:
+No
+CLASSID:
++5
+NUMBER OF SAMPLES:
+0
+LIST OF SAMPLES:
+TRIAL NUMBER		TIME FROM SYNC POINT (in seconds)
+
+
+CLASSGROUPID:
++3
+NAME:
+PP1
+COMMENT:
+Trigger Marker corresponding to PP1 (CondBitPattern=0x0, CondBitMask=0x0, Flag0to1Only=1,MinStableLength=0,TransientSearchMask=0x0)
+COLOR:
+red
+EDITABLE:
+No
+CLASSID:
++6
+NUMBER OF SAMPLES:
+0
+LIST OF SAMPLES:
+TRIAL NUMBER		TIME FROM SYNC POINT (in seconds)
+
+
+CLASSGROUPID:
++3
+NAME:
+PP2
+COMMENT:
+Trigger Marker corresponding to PP2 (CondBitPattern=0x0, CondBitMask=0x0, Flag0to1Only=1,MinStableLength=0,TransientSearchMask=0x0)
+COLOR:
+red
+EDITABLE:
+No
+CLASSID:
++7
+NUMBER OF SAMPLES:
+0
+LIST OF SAMPLES:
+TRIAL NUMBER		TIME FROM SYNC POINT (in seconds)
+
+

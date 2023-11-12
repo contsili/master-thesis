@@ -1,0 +1,56 @@
+// Virtual channel configuration
+
+DigitalChannel
+{
+	Name:	THDAC001
+	Ref:	HTRG001
+	mask:	1
+	pattern:	1
+	Offset:	0
+}
+
+DigitalChannel
+{
+	Name:	THDAC002
+	Ref:	HTRG001
+	mask:	4
+	pattern:	4
+	Offset:	0
+}
+
+DigitalChannel
+{
+	Name:	THDAC003
+	Ref:	HTRG001
+	mask:	16
+	pattern:	16
+	Offset:	0
+}
+
+DigitalChannel
+{
+	Name:	THDAC006
+	Ref:	HTRG002
+	mask:	4
+	pattern:	4
+	Offset:	0
+}
+
+DigitalChannel
+{
+	Name:	PP1
+	Ref:	UPPT001
+	mask:	0
+	pattern:	0
+	Offset:	0
+}
+
+DigitalChannel
+{
+	Name:	PP2
+	Ref:	UPPT002
+	mask:	0
+	pattern:	0
+	Offset:	0
+}
+

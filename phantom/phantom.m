@@ -3,7 +3,7 @@
 
 
 cfg = [];
-cfg.dataset = 'E:\3031000.01\raw\01_3031000.01_20231010_01.ds';
+cfg.dataset = 'C:\Users\user\Documents\Courses\Internship\master-thesis\phantom\raw\01_3031000.01_20231010_01.ds';
 cfg.preproc.demean = 'yes';
 cfg.ylim = [-1 1]*1e-11;
 ft_databrowser(cfg)
@@ -19,7 +19,7 @@ ft_databrowser(cfg)
 %%
 
 cfg = [];
-cfg.dataset = 'E:\3031000.01\raw\01_3031000.01_20231010_01.ds';
+cfg.dataset = 'C:\Users\user\Documents\Courses\Internship\master-thesis\phantom\raw\01_3031000.01_20231010_01.ds';
 cfg.detrend = 'yes';
 
 cfg.lpfilter  = 'yes';

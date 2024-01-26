@@ -1,3 +1,5 @@
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=contsili/master-thesis)
+
 # Comparisons between SQUID- and OPM-based MEG systems
 Research question: Would OPM-MEG systems in the long run be able to replace SQUID/Cryogenic/conventional MEG systems? If yes, how many OPM-MEG sensors do we need to outperform the existing 275-channel SQUID-MEG system from CTF?
 

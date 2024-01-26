@@ -31,7 +31,7 @@ ft_plot_sens(fieldlinebeta2, 'label', 'no', 'axes', 0, 'orientation', 0) % looks
 % way 2: manually create points on my sphere
 cd 'C:\Users\user\Documents\Courses\Internship\master-thesis\simulations\ni2-electrophys-master\private' % that's where mesh_sphere() is located
 
-sourcemodel                       = mesh_sphere(5000, 'msphere');
+sourcemodel                       = mesh_sphere(10000, 'msphere');
 sourcemodel                       = sourcemodel/11;
 sourcemodel(sourcemodel(:,3)<0,:) = []; % keep the upper sphere only
 
@@ -59,8 +59,8 @@ legend('Sphere', 'Generated Points');
 % data.grad = fieldlinebeta2;
 % leadfield = ft_prepare_leadfield(cfg);
 
-%% way 2: Define dipole moment manually
-dipmom = [1 0 0]'; % I choose a random dipmom
+%% way 2: Define dipole moment manually: I choose a random dipmom
+dipmom = [1 0 0]';
 
 lf144 = zeros(144, length(sourcemodel));
 for i = 1: length(sourcemodel) 
@@ -68,7 +68,7 @@ for i = 1: length(sourcemodel)
 end
 
 norm_lf144 = vecnorm(lf144);
-norm_lf144=  sqrt(norm_lf144); % Some high values and a lot low ones -> use logarithmic scale
+% norm_lf144=  sqrt(norm_lf144); % Some high values and a lot low ones -> use logarithmic scale
 
 
 %% way 3: I choose a tangential dipole always
@@ -109,7 +109,7 @@ for i = 1:length(sourcemodel)
 end
 
 norm_lf144_nor = vecnorm(lf144_nor);
-norm_lf144_nor=  log(norm_lf144_nor); % Some high values and a lot low ones -> use logarithmic scale
+% norm_lf144_nor=  log(norm_lf144_nor); % Some high values and a lot low ones -> use logarithmic scale
 
 % check if I picked the tangential dipoles
 quiver3(sourcemodel(:, 1), sourcemodel(:, 2), sourcemodel(:, 3), ...
@@ -133,13 +133,13 @@ figure;
 % Triangulation for the sphere surface
 trisurf(delaunay(sourcemodel(:, 1), sourcemodel(:, 2), sourcemodel(:, 3)), ...
     sourcemodel(:, 1), sourcemodel(:, 2), sourcemodel(:, 3), ...
-    norm_lf144, 'FaceColor', 'interp', 'EdgeColor', 'none');
+    norm_lf144_nor, 'FaceColor', 'interp', 'EdgeColor', 'none');
 
 colorbar;
 xlabel('X-axis');
 ylabel('Y-axis');
 zlabel('Z-axis');
-title('Color-coded norm-lf144-nor');
+title('Color-coded norm-lf144-normal');
 grid on;
 
 hold on;

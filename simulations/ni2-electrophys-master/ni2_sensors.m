@@ -19,7 +19,8 @@ function sens = ni2_sensors(varargin)
 % 
 % 'opm_tangential_radial' generates a 301-channel opm-meg magnetometer sensor array with
 %  two channels for each sensor, one tangential and one radial (like the
-%  FieldLine system we bought in DCCN)
+%  FieldLine system we bought in DCCN). I can randomly take out sensors (Monte-Carlo simulations) by
+%  setting the input 'sensor_number' lower than the default number of sensors, i.e., lower than 301.
 
 
 type   = ft_getopt(varargin, 'type', 'eeg');
@@ -199,9 +200,9 @@ switch type
 
 
   case 'ctf151'
-    load('ctf151');
+    sens=load('C:\Users\user\Documents\MATLAB\matlab_toolboxes\fieldtrip\fieldtrip\template\gradiometer\ctf151.mat');
+    
     % only keep the normal channels
-
     sel = strcmp(sens.chantype, 'meggrad');
     sens.label    = sens.label(sel);
     sens.chantype = sens.chantype(sel);
@@ -212,16 +213,16 @@ switch type
 
 
   case 'ctf275'
-    load('ctf275');
+    sens=load('C:\Users\user\Documents\MATLAB\matlab_toolboxes\fieldtrip\fieldtrip\template\gradiometer\ctf275.mat');
 
     % only keep the normal MEG channels
-    sel = strcmp(sens.chantype, 'meggrad');
-    sens.label    = sens.label(sel);
-    sens.chantype = sens.chantype(sel);
-    sens.chanunit = sens.chanunit(sel);
-    sens.tra      = sens.tra(sel,:);
-    sens.chanpos  = sens.chanpos(sel,:);
-    sens.chanori  = sens.chanori(sel,:);
+    sel = strcmp(sens.ctf275.chantype, 'meggrad');
+    sens.ctf275.label    =  sens.ctf275.label(sel);
+    sens.ctf275.chantype =  sens.ctf275.chantype(sel);
+    sens.ctf275.chanunit =  sens.ctf275.chanunit(sel);
+    sens.ctf275.tra      =  sens.ctf275.tra(sel,:);
+    sens.ctf275.chanpos  =  sens.ctf275.chanpos(sel,:);
+    sens.ctf275.chanori  =  sens.ctf275.chanori(sel,:);
 
 
 

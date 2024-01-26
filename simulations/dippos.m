@@ -374,3 +374,4 @@ for i=1:length(sensor_noise_OPM)
 %     text(ax.XLim(2), ax.YLim(2), fittedEquation, 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top');
 end
 
+

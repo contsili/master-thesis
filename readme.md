@@ -15,7 +15,7 @@ The work was conducted at the [Donders Institute for Brain, Cognition and Behavi
   - [preprocessing/](./analysis/preprocessing) code to preprocess the OPM and SQUID data.
   - [supplementary/](./analysis/supplementary) code to create the supplementary material figures of this thesis.
 
-## Short description
+## Abstract
 &nbsp;&nbsp;&nbsp;&nbsp;We study the wearable MEG sensors known as optically pumped magnetometers (OPMs). In comparison to the superconducting quantum interference devices (SQUIDs), OPM systems promise higher sensitivity and better spatial resolution. As a result, OPM systems have gained significant interest from clinics and neuroscience research institutions, including the Donders Institute. Since OPMs can be purchased and placed as individual sensors, clinics and neuroscience research institutions should choose how many sensors to get. For example, at the Donders Institute, we currently have 32 OPM sensors, but plan to get more in the future. This raises the question: how many OPM sensors should we get to outperform our current 275-sensor CTF SQUID system? This master thesis suggests that a system with 128 OPMs can outperform for cortical areas our current 275-sensor CTF SQUID system.
 
 
